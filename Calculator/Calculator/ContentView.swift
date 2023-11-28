@@ -80,6 +80,8 @@ enum ButtonType : String {
 struct ContentView: View {
     
     @State private var totalNumber: String = "0"
+    @State var tempNumber: Int = 0
+    @State var operatorType: ButtonType = .clear
     private let buttonData: [[ButtonType]] = [[.clear, .opposite, .percent, .devide],
                                               [.seventh, .eighth, .nineth, .multiple],
                                               [.fourth, .fifth, .sixth, .minus],
@@ -115,6 +117,27 @@ struct ContentView: View {
                                 } else {
                                     if item == .clear {
                                         totalNumber = "0"
+                                    } else if item == .plus {
+                                        tempNumber = Int(totalNumber) ?? 0
+                                        operatorType = .plus
+                                        totalNumber = "0"
+                                    } else if item == .multiple {
+                                        tempNumber = Int(totalNumber) ?? 0
+                                        operatorType = .multiple
+                                        totalNumber = "0"
+                                    } else if item == .minus {
+                                        tempNumber = Int(totalNumber) ?? 0
+                                        operatorType = .minus
+                                        totalNumber = "0"
+                                    } else if item == .equal {
+                                        if operatorType == .plus {
+                                            totalNumber = String((Int(totalNumber) ?? 0) + tempNumber)
+                                        } else if operatorType == .multiple {
+                                            totalNumber = String((Int(totalNumber) ?? 0) * tempNumber)
+                                        } else if operatorType == .minus {
+                                            totalNumber = String(tempNumber - (Int(totalNumber) ?? 0))
+                                        }
+                                        
                                     } else {
                                         totalNumber += item.buttonDisplyName
                                     }
