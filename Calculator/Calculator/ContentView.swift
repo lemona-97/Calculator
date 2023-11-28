@@ -12,7 +12,7 @@ enum ButtonType : String {
     case dot, equal, plus, minus, multiple, devide
     case percent, opposite, clear
     
-    var buttonDisplyName: String {
+    var buttonDisplayName: String {
         switch self {
         case .first:
             return "1"
@@ -45,11 +45,11 @@ enum ButtonType : String {
         case .multiple:
             return "X"
         case .devide:
-            return "$"
+            return "/"
         case .percent:
             return "%"
         case .opposite:
-            return "?"
+            return "+/-"
         case .clear:
             return "C"
         }
@@ -112,7 +112,7 @@ struct ContentView: View {
                                               item == .devide {
                                         totalNumber = "Error"
                                     } else {
-                                        totalNumber = item.buttonDisplyName
+                                        totalNumber = item.buttonDisplayName
                                     }
                                 } else {
                                     if item == .clear {
@@ -129,6 +129,12 @@ struct ContentView: View {
                                         tempNumber = Int(totalNumber) ?? 0
                                         operatorType = .minus
                                         totalNumber = "0"
+                                    } else if item == .devide {
+                                        tempNumber = Int(totalNumber) ?? 0
+                                        operatorType = .devide
+                                        totalNumber = "0"
+                                    } else if item == .opposite {
+                                        totalNumber = String((-(Int(totalNumber) ?? 0) ))
                                     } else if item == .equal {
                                         if operatorType == .plus {
                                             totalNumber = String((Int(totalNumber) ?? 0) + tempNumber)
@@ -136,15 +142,17 @@ struct ContentView: View {
                                             totalNumber = String((Int(totalNumber) ?? 0) * tempNumber)
                                         } else if operatorType == .minus {
                                             totalNumber = String(tempNumber - (Int(totalNumber) ?? 0))
+                                        }  else if operatorType == .devide {
+                                            totalNumber = String(tempNumber / (Int(totalNumber) ?? 0))
                                         }
                                         
                                     } else {
-                                        totalNumber += item.buttonDisplyName
+                                        totalNumber += item.buttonDisplayName
                                     }
                                 }
                                 
                             } label: {
-                                Text(item.buttonDisplyName)
+                                Text(item.buttonDisplayName)
                                     .frame(width: item == .some(.zero) ? 160 : 80, height: 80)
                                     .background(item.backgroundColor)
                                     .clipShape(Capsule())
@@ -159,6 +167,7 @@ struct ContentView: View {
             }
         }
     }
+    
 }
 
 #Preview {
