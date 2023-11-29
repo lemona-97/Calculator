@@ -82,6 +82,7 @@ struct ContentView: View {
     @State private var totalNumber: String = "0"
     @State var tempNumber: Int = 0
     @State var operatorType: ButtonType = .clear
+    @State var isNotEditing: Bool = true
     private let buttonData: [[ButtonType]] = [[.clear, .opposite, .percent, .devide],
                                               [.seventh, .eighth, .nineth, .multiple],
                                               [.fourth, .fifth, .sixth, .minus],
@@ -103,9 +104,10 @@ struct ContentView: View {
                     HStack {
                         ForEach(line, id: \.self) { item in
                             Button {
-                                if totalNumber == "0" {
+                                if isNotEditing {
                                     if item == .clear {
                                         totalNumber = "0"
+                                        isNotEditing = true
                                     } else if item == .plus ||
                                               item == .minus ||
                                               item == .multiple ||
@@ -113,26 +115,29 @@ struct ContentView: View {
                                         totalNumber = "Error"
                                     } else {
                                         totalNumber = item.buttonDisplayName
+                                        isNotEditing = false
                                     }
+                                    
                                 } else {
                                     if item == .clear {
                                         totalNumber = "0"
+                                        isNotEditing = true
                                     } else if item == .plus {
                                         tempNumber = Int(totalNumber) ?? 0
                                         operatorType = .plus
-                                        totalNumber = "0"
+                                        isNotEditing = true
                                     } else if item == .multiple {
                                         tempNumber = Int(totalNumber) ?? 0
                                         operatorType = .multiple
-                                        totalNumber = "0"
+                                        isNotEditing = true
                                     } else if item == .minus {
                                         tempNumber = Int(totalNumber) ?? 0
                                         operatorType = .minus
-                                        totalNumber = "0"
+                                        isNotEditing = true
                                     } else if item == .devide {
                                         tempNumber = Int(totalNumber) ?? 0
                                         operatorType = .devide
-                                        totalNumber = "0"
+                                        isNotEditing = true
                                     } else if item == .opposite {
                                         totalNumber = String((-(Int(totalNumber) ?? 0) ))
                                     } else if item == .equal {
@@ -153,7 +158,7 @@ struct ContentView: View {
                                 
                             } label: {
                                 Text(item.buttonDisplayName)
-                                    .frame(width: item == .some(.zero) ? 160 : 80, height: 80)
+                                    .frame(width: caculateButtonWidth(button: item), height: caculateButtonHeight(button: item))
                                     .background(item.backgroundColor)
                                     .clipShape(Capsule())
                                     .foregroundStyle(item.foregroundColor)
@@ -168,6 +173,18 @@ struct ContentView: View {
         }
     }
     
+    private func caculateButtonWidth(button: ButtonType) -> CGFloat {
+        switch button {
+        case .zero:
+            return (UIScreen.main.bounds.width - 5 * 10) / 4 * 2
+        default:
+            return (UIScreen.main.bounds.width - 5 * 10) / 4
+        }
+    }
+    
+    private func caculateButtonHeight(button: ButtonType) -> CGFloat {
+        return (UIScreen.main.bounds.width - 5 * 10) / 4
+    }
 }
 
 #Preview {
